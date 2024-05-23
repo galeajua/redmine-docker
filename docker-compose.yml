@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: my-postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres-secret
+      POSTGRES_USER: redmine
+    networks:
+      - redmine-network
+
+  redmine:
+    image: redmine:latest
+    container_name: my-redmine
+    restart: always
+    ports:
+      - 8080:3000
+    environment:
+      REDMINE_DB_POSTGRES: my-postgres
+      REDMINE_DB_USERNAME: redmine
+      REDMINE_DB_PASSWORD: postgres-secret
+    depends_on:
+      - db
+    networks:
+      - redmine-network
+
+networks:
+  redmine-network:
+    driver: bridge
